@@ -2,14 +2,15 @@ def initPlayers():
     global PlayerList
     PlayerList = []
 
-def createNewPlayer(nama, kerusakan=0, kekuatanDefense=0):
-    Player = dict(name=nama,
-              score=0,
-              damage=kerusakan,
-              health=100,
-              defensePower=kekuatanDefense,
-              defense=False)
-    return Player
+def createNewPlayer(name, damage=0, defensePower=0):
+    return dict(
+        name=name,
+        score=0,
+        damage=damage,
+        health=100,
+        defensePower=defensePower,
+        defense=False,
+    )
 
 def addPlayer(Player):
     global PlayerList
@@ -17,41 +18,32 @@ def addPlayer(Player):
 
 def removePlayer(nama):
     global PlayerList
+    
     for i in PlayerList:
-        if PlayerList[i]["name"]==nama:
+        if i["name"]==nama:
             PlayerList.remove(i)
             return
     print("There is no player with that name!")
 
 def setPlayer(player, key, value):
-    for i in PlayerList:
-        if PlayerList[i]==player:
-            PlayerList[i][key]=value
-            return
-    print("There is no player with that attribute")
+    player[key] = value
 
 def attackPlayer(attacker, target):
-    a = 0
-    t = 0
-    for i in PlayerList:
-        if PlayerList[i]==attacker:
-            a = i
-            break
-    for i in PlayerList:
-        if PlayerList[i]==target:
-            t = i
-            break
-    if PlayerList[t]["defense"]:
-        if PlayerList[a]["damage"] > PlayerList[t]["defensePower"]:
-            PlayerList[a]["score"] += 0.8
-            PlayerList[t]["health"] -= abs(PlayerList[a]["damage"] - PlayerList[t]["defensePower"])
-        PlayerList[t]["defense"] = False
+    if target["defense"]:
+        score = round(attacker["score"] + 1 - (1 / target["defensePower"]), 2)
+        health = target["health"] + target["defensePower"] - attacker["damage"]
+        setPlayer(target,"defense",False)
     else:
-        if PlayerList[a]["damage"] > PlayerList[t]["defensePower"]:
-            PlayerList[a]["score"] += 1
-            PlayerList[t]["health"] -= abs(PlayerList[a]["damage"] - PlayerList[t]["defensePower"])
+        score = round(attacker["score"] + 1,2) 
+        health = target["health"] - attacker["damage"] 
+        score = max(0, score)
+    
+
+    setPlayer(attacker, "score", score)
+    setPlayer(target, "health", health)
 
 def displayMatchResult():
+    global PlayerList
     sorted_data = sorted(PlayerList, key=lambda x: (-x["score"], -x["health"]))
     for i in range(len(sorted_data)):
         print(f"Rank {i+1}: {sorted_data[i]["name"]} | Score: {sorted_data[i]["score"]} | Health: {sorted_data[i]["health"]}")
