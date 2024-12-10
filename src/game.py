@@ -46,4 +46,4 @@ def displayMatchResult():
     global PlayerList
     sorted_data = sorted(PlayerList, key=lambda x: (-x["score"], -x["health"]))
     for i in range(len(sorted_data)):
-        print(f"Rank {i+1}: {sorted_data[i]["name"]} | Score: {sorted_data[i]["score"]} | Health: {sorted_data[i]["health"]}")
+       print(f"Rank {i+1}: {sorted_data[i]['name']} | Score: {sorted_data[i]['score']} | Health: {sorted_data[i]['health']}")
